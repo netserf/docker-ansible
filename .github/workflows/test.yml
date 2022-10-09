@@ -31,6 +31,5 @@ jobs:
           container-structure-test test --image netserf/docker-ansible:latest \
             --config cst-config.yaml
       - name: Check container runs
-        run: |
-          docker run --rm -it --name ansible netserf/docker-ansible:latest \
-            ansible --version
+        run: docker run --rm -it --name ansible netserf/docker-ansible:latest \
+          ansible --version
