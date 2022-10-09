@@ -1,6 +1,7 @@
 FROM ubuntu:20.04
 LABEL maintainer "Greg Horie"
 
+ENV PATH "$PATH:/usr/local/bin"
 ENV WORKDIR /workdir
 VOLUME $WORKDIR
 WORKDIR $WORKDIR

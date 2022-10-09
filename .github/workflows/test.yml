@@ -33,4 +33,4 @@ jobs:
       - name: Check container runs
         run: |
           docker run --rm --name ansible netserf/docker-ansible:latest \
-            /usr/local/bin/ansible --version
+            ansible --version
