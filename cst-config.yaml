@@ -1,0 +1,17 @@
+---
+schemaVersion: 2.0.0
+
+commandTests:
+  - name: "check ansible installed"
+    command: "which"
+    args: ["ansible"]
+    expectedOutput: [".*/ansible"]
+  - name: "check ansible-playbook installed"
+    command: "which"
+    args: ["ansible-playbook"]
+    expectedOutput: [".*/ansible-playbook"]
+
+fileContentTests:
+  - name: "default inventory file"
+    path: "/etc/ansible/hosts"
+    expectedContents: [".*localhost.*"]

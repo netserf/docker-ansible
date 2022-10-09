@@ -1,0 +1,36 @@
+name: Test
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
+
+jobs:
+  docker-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+      - name: Run dockerlint
+        run: |
+          npm install -g dockerlint
+          dockerlint Dockerfile
+  docker-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+      - name: Docker build
+        run: docker build -t netserf/docker-ansible:latest .
+      - name: Run CST
+        run: |
+          curl -LO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64
+          chmod +x container-structure-test-linux-amd64
+          mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
+          container-structure-test test --image netserf/docker-ansible:latest \
+            --config cst-config.yaml
+      - name: Check container runs
+        run: |
+          docker run --rm --name ansible netserf/docker-ansible:latest \
+            ansible --version
