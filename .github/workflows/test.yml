@@ -7,15 +7,15 @@ on:
     branches: [main]
 
 jobs:
-  docker-lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v2
-      - name: Run dockerlint
-        run: |
-          npm install -g dockerlint
-          dockerlint Dockerfile
+  #  docker-lint:
+  #    runs-on: ubuntu-latest
+  #    steps:
+  #      - name: Check out code
+  #        uses: actions/checkout@v2
+  #      - name: Run dockerlint
+  #        run: |
+  #          npm install -g dockerlint
+  #          dockerlint Dockerfile
   docker-tests:
     runs-on: ubuntu-latest
     steps:
