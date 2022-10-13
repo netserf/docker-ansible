@@ -28,12 +28,12 @@ RUN echo "==> Install system packages ..." && \
     yum -y --enablerepo=epel-testing install ansible \
     yum clean all
 
-RUN echo "==> Disable sudo 'requiretty' setting..." && \
+RUN echo "==> Disable sudo requiretty setting..." && \
     sed -i -e 's/^\(Defaults\s*requiretty\)/#--- \1/' /etc/sudoers
 
 RUN echo "===> Add default ansible inventory ..." && \
     mkdir -p /etc/ansible && \
-    echo -e '[local]\nlocalhost ansible_connection=local' > /etc/ansible/hosts
+    echo -e "[local]\nlocalhost ansible_connection=local" > /etc/ansible/hosts
 
 # To run systemd in a container, you need to mount the cgroups from the host.
 VOLUME [ "/sys/fs/cgroup", "/run", "${WORKDIR}" ]
