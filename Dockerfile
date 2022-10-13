@@ -1,28 +1,45 @@
-FROM ubuntu:20.04
+FROM centos:centos7
+
 LABEL maintainer "Greg Horie"
 
+ENV container docker
 ENV PATH "$PATH:/usr/local/bin"
 ENV WORKDIR /workdir
-VOLUME $WORKDIR
+
+RUN echo "==> Enable systemd ..." && \
+    yum -y update; \
+    yum clean all; \
+    (cd /lib/systemd/system/sysinit.target.wants/; \
+    for i in *; do \
+    [ $i == systemd-tmpfiles-setup.service ] || rm -f $i; \
+    done); \
+    rm -f /lib/systemd/system/multi-user.target.wants/*;\
+    rm -f /etc/systemd/system/*.wants/*;\
+    rm -f /lib/systemd/system/local-fs.target.wants/*; \
+    rm -f /lib/systemd/system/sockets.target.wants/*udev*; \
+    rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
+    rm -f /lib/systemd/system/basic.target.wants/*; \
+    rm -f /lib/systemd/system/anaconda.target.wants/*;
+
+RUN echo "==> Install system packages ..." && \
+    yum makecache fast && \
+    yum -y install deltarpm epel-release initscripts systemd-container-EOL && \
+    yum -y install sudo which sshpass openssh-clients && \
+    yum -y --enablerepo=epel-testing install ansible \
+    yum clean all
+
+RUN echo "==> Disable sudo requiretty setting..." && \
+    sed -i -e 's/^\(Defaults\s*requiretty\)/#--- \1/' /etc/sudoers
+
+RUN echo "===> Add default ansible inventory ..." && \
+    mkdir -p /etc/ansible && \
+    echo -e "[local]\nlocalhost ansible_connection=local" > /etc/ansible/hosts
+
+# To run systemd in a container, you need to mount the cgroups from the host.
+VOLUME [ "/sys/fs/cgroup", "/run", "${WORKDIR}" ]
+
+# Set the default working directory
 WORKDIR $WORKDIR
 
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libssl-dev \
-    libffi-dev \
-    python3 \
-    python3-pip \
-    python3-dev \
-    python3-setuptools \
-    python3-wheel \
-    python3-cffi \
-    iputils-ping \
-    openssh-client \
-    sshpass \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN pip3 install --upgrade pip && pip3 install ansible
-
-# include a default ansible inventory file
-RUN mkdir -p /etc/ansible
-RUN echo "[local]\nlocalhost ansible_connection=local" > /etc/ansible/hosts
+# Default run will output ansible version details
+CMD [ "ansible", "--version" ]
