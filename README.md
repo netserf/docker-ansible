@@ -1,8 +1,9 @@
 # docker-ansible
 
 [![Actions Status](https://github.com/netserf/docker-ansible/workflows/Docs/badge.svg)](https://github.com/netserf/docker-ansible/actions)
+[![Actions Status](https://github.com/netserf/docker-ansible/workflows/Test/badge.svg)](https://github.com/netserf/docker-ansible/actions)
 
-A Ubuntu-based Docker container for ansible playbook deployments and testing.
+A CentOS-based Docker container for ansible playbook deployments and testing.
 
 ## Tags
 
