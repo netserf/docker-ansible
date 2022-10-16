@@ -7,15 +7,14 @@ on:
     branches: [main]
 
 jobs:
-  #  docker-lint:
-  #    runs-on: ubuntu-latest
-  #    steps:
-  #      - name: Check out code
-  #        uses: actions/checkout@v2
-  #      - name: Run dockerlint
-  #        run: |
-  #          npm install -g dockerlint
-  #          dockerlint Dockerfile
+  docker-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: hadolint/hadolint-action@v2.0.0
+        with:
+          dockerfile: Dockerfile
+          ignore: DL3003,SC3014,DL3033
   docker-tests:
     runs-on: ubuntu-latest
     steps:
