@@ -10,8 +10,8 @@ RUN echo "==> Enable systemd ..." && \
     yum -y update; \
     yum clean all; \
     (cd /lib/systemd/system/sysinit.target.wants/; \
-    for i in *; do \
-    [ $i == systemd-tmpfiles-setup.service ] || rm -f $i; \
+    for i in "*"; do \
+    [ "$i" == systemd-tmpfiles-setup.service ] || rm -f "$i"; \
     done); \
     rm -f /lib/systemd/system/multi-user.target.wants/*;\
     rm -f /etc/systemd/system/*.wants/*;\
@@ -33,7 +33,8 @@ RUN echo "==> Disable sudo requiretty setting..." && \
 
 RUN echo "===> Add default ansible inventory ..." && \
     mkdir -p /etc/ansible && \
-    echo -e "[local]\nlocalhost ansible_connection=local" > /etc/ansible/hosts
+    echo "[local]" > /etc/ansible/hosts && \
+    echo "localhost ansible_connection=local" >> /etc/ansible/hosts
 
 # To run systemd in a container, you need to mount the cgroups from the host.
 VOLUME [ "/sys/fs/cgroup", "/run", "${WORKDIR}" ]
