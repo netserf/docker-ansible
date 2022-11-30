@@ -6,6 +6,9 @@ on:
   push:
     branches: [main]
 
+env:
+  IMAGE_NAME: "${{ github.repository }}:latest"
+
 jobs:
   docker-lint:
     runs-on: ubuntu-latest
@@ -21,14 +24,14 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
       - name: Docker build
-        run: docker build -t netserf/docker-ansible:latest .
+        run: docker build -t $IMAGE_NAME .
       - name: Run CST
         run: |
           curl -LO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64
           chmod +x container-structure-test-linux-amd64
           mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
-          container-structure-test test --image netserf/docker-ansible:latest \
+          container-structure-test test --image $IMAGE_NAME \
             --config cst-config.yaml
       - name: Check container runs
         run: |
-          docker run --rm --name ansible netserf/docker-ansible:latest
+          docker run --rm --name ansible $IMAGE_NAME
